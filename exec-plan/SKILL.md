@@ -1,6 +1,6 @@
 ---
 name: exec-plan
-description: Skill for writing and using an execution plan that guides agents from design to implementation. Use for complex work such as writing complex features or significant refactors.
+description: Guide to writing and using an execution plan from design to implementation. Use for complex work such as writing complex features or significant refactors.
 ---
 
 # Execution Plans
