@@ -4,10 +4,12 @@ A small Claude Code skill collection for designing agent harnesses and writing i
 
 ## What's inside
 
-This repo currently includes two skills:
+This repo currently includes these skills:
 
 - **`context-engineering/`** — distills battle-tested context engineering principles for building agent harnesses and skill suites
 - **`exec-plan/`** — teaches agents how to write and maintain self-contained execution plans that can be followed from design through implementation
+- **`autoresearch-linter/`** — lints an autoresearch skill suite for common design violations
+- **`token-counter/`** — counts Claude input tokens for a file or directory via the token counting API, to spot bloated skills or budget prompts
 
 ### `context-engineering`
 
@@ -29,12 +31,16 @@ It emphasizes:
 
 ## Installation
 
-Copy either or both skill directories into your Claude Code skills folder:
+Copy any skill directory into your Claude Code skills folder:
 
 ```bash
 cp -r context-engineering ~/.claude/skills/
 cp -r exec-plan ~/.claude/skills/
+cp -r autoresearch-linter ~/.claude/skills/
+cp -r token-counter ~/.claude/skills/
 ```
+
+The `token-counter` skill additionally needs `pip install anthropic` and `ANTHROPIC_API_KEY` in the environment.
 
 ## Usage
 
@@ -43,6 +49,8 @@ Invoke the skill you want in any Claude Code session:
 ```
 /context-engineering
 /exec-plan
+/autoresearch-linter
+/token-counter
 ```
 
 Claude will load the relevant guidance and apply it while reasoning.
