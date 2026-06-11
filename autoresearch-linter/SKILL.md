@@ -20,6 +20,7 @@ Using the principles and common mistakes below, scan through the autoresearch sk
 
 - **Trust the agent — use inversion of control** Assume that the agent has good decision-making ability within a clear framework. Hence give it a general framework when possible, and let it figure out edge cases. Avoid dense IF/THEN conditional trees, enumerated defensive fallbacks, and "if X then do Y else do Z" branching. Recognize that over fitting to one specific workflow prevents the agent being able to adapt to a wide range of tasks.
 - **Offload to deterministic tools for repetitive workflows and high precision tasks** - for high precision tasks that require correctness and repetitive tasks that do not require reasoning, build scripts and tools that the agent calls. For example, instead of asking the agent to monitor a log for a particular completion keyword, give it tools like `Monitor` or a script to execute which can poll the script properly. This saves reasoning tokens and avoids failure cases where an agent may fail to perform a specific action properly.
+- **Do not design for backward compatability in refactoring** - in order to the keep the design of the autoresearch plugin optimal, do not try and build for backward compatability. This frequently causes headaches as a lot of unnecessary complexity and mechanisms are introduced. Focus on keeping the design and framework clean. Users can always delete `.autoresearch/` and start over to work with the new version.
 
 ### Autoresearch skill writing style
 
@@ -31,3 +32,18 @@ Using the principles and common mistakes below, scan through the autoresearch sk
 ### Common Mistakes
 
 - **Synthesize, don't split.** When both user and agent contribute (goal candidates, brainstorm ideas), produce a unified output. Never label "user's idea" vs "agent's idea" — the 2-3 final candidates should draw from whatever sources made sense, presented as one set. User input is guidance INTO the process, not a parallel stream.
+- **Don't write out design decisions and skill understanding explicitly into `SKILL.md`.** A lot of times the agent writes the reasoning and information behind the design for the skill directly into the `SKILL.md` markdown. This causes unnecessary verbosity that is irrelevant to helping the agent complete the task at hand. For example:
+
+```markdown
+## BAD
+Entered when the init script (Activation step 4) just bootstrapped a fresh `.autoresearch/` (`created_autoresearch=true`). At this point the directory structure and starter templates are already in place and the session sentinel has been written — the init script owns all of that work. What remains are the one-time git-side setup steps, which need interactive recovery on failure and therefore stay with the agent.
+...
+After first time autoresearch initialization, invoke `/research-import` to build project context and import any prior experiment history. Do NOT invoke any other skill. `/research-import` is the next step. **This skill runs ONLY ONCE during first-time setup** — it performs the same project context scan as `/research-context` and additionally discovers and imports historical experiments the user ran before adopting autoresearch. On all subsequent loops, `/research-context` runs instead.
+
+## BETTER
+Enter when the init script bootstrapped a fresh `.autoresearch/` (`created_autoresearch=true`). What remains are the one-time git-side setup steps:
+...
+After first time autoresearch initialization, invoke `/research-import`. Do NOT invoke any other skill. `/research-import` is the next step. **This skill runs ONLY ONCE during first-time setup**.
+```
+
+- **Unnecessary verbosity.** This is a very COMMON and very bad mistake that agents commonly make during refactoring of the autoresearch skills. They tend to favor overly verbose template comments, overly verbose and detailed routing mechanisms in the `SKILL.md`, and tons of positive and negative examples with a smaller subset of illustrative examples are enough. All of these bloat the tokens consumed by models in the autoresearch loop and decrease efficiency. Most of the time, the same result can be had with much shorter, high level instructions, as the corresponding agents are good at inferring specifics and performing the correct action without too much verbose micro-management.
