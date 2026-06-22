@@ -17,6 +17,19 @@ Example: instead of an autoresearch loop with 8 phases where agents can move for
 
 ==Agents are much more adaptable and independent than you think.== Instead of explicitly spelling out each possible state or scenario and telling the agents what to do in that scenario, leave it to the agents to adapt. For instance, if the skill contains instructions for the agent to push to a branch and create a PR, instead of adding specific instructions when the `remote` is not available, leave it to the agent. In practice, the agent will adapt and know how to push if the `git remote` is not set.
 
+Example: in the system prompt for a deep codebase subagent tasked with finding optimization opportunities for a specific target metric, instead of the instruction:
+
+```markdown
+Surface what a cursory reader misses that may be important and costly: redundant work, unnecessary data movement or serialization, sync/locking points, hidden allocations, blocking I/O, idle parallelism (cores/devices/streams), repeated recomputation.
+```
+
+A better system prompt for the harness would be:
+```markdown
+Surface what a cursory reader misses that may be important and costly with respect to the optimization goal.
+```
+
+This prevents the subagent from overfitting to the specific examples listed when they do not fit in the given context or goal. Agents can adapt very well and know what they should be looking for - you do not need to list it all one by one.
+
 ### Mechanical enforcement and feedback
 
 3. Offload deterministic processes to mechanical scripts
