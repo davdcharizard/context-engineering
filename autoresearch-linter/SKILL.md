@@ -46,4 +46,24 @@ Enter when the init script bootstrapped a fresh `.autoresearch/` (`created_autor
 After first time autoresearch initialization, invoke `/research-import`. Do NOT invoke any other skill. `/research-import` is the next step. **This skill runs ONLY ONCE during first-time setup**.
 ```
 
+Another example, here the agent does not need to know that no integration branch is created (as long as it is not prompted to do so, it is automatically not created!) as well as the reasoning behind that fact:
+```markdown
+## BAD
+Enter when the init script bootstrapped a fresh `.autoresearch/` (`created_autoresearch=true`). The directory structure and starter templates are already in place. No integration branch is created at init — each goal gets its own `autoresearch/{slug}-dev`, created when the goal is first defined. What remains here are two one-time steps:
+
+## BETTER
+Enter when the init script bootstrapped a fresh `.autoresearch/` (`created_autoresearch=true`). The directory structure and starter templates are already in place. What remains here are two one-time steps:
+```
+
+Another example, here the first lines of a markdown for a "Cross-Model Adversarial Review Harness" are supposed to instruct an agent to begin adversarial review, but has too much irrelevant design explanation:
+```markdown
+## BAD
+Both review gates (brainstorm finalists, written plan) share this mechanism. The reviewer is a **different model family** run non-interactively: it reads the artifacts and supporting context from disk, and its output is redirected straight into a review file — never back through your context. You know your own host, so pick the sibling CLI.
+
+**Host = Claude Code → reviewer = Codex.** Pipe the role prompt in on stdin; the task arg names the input paths and says to emit the review to stdout:
+
+## BETTER
+Run the reviewer agent non-interactively. The reviewer should read the artifact and supporting context, and its output should be redirected into a review file. If you are a Claude Code agent, use Codex as your reviewer. If you are a Codex agent, use Claude Code as your reviewer. Pipe the role prompt in on stdin; the task arg names the input paths and says to emit the review to stdout:
+```
+
 - **Unnecessary verbosity.** This is a very COMMON and very bad mistake that agents commonly make during refactoring of the autoresearch skills. They tend to favor overly verbose template comments, overly verbose and detailed routing mechanisms in the `SKILL.md`, and tons of positive and negative examples with a smaller subset of illustrative examples are enough. All of these bloat the tokens consumed by models in the autoresearch loop and decrease efficiency. Most of the time, the same result can be had with much shorter, high level instructions, as the corresponding agents are good at inferring specifics and performing the correct action without too much verbose micro-management.

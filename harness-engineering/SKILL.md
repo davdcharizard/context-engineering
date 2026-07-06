@@ -99,3 +99,17 @@ Harness files are read by the agent at runtime, so every sentence must help it c
 13. Calibrate the evaluator before optimizing the agent, and keep it adversarial
 
 If the evaluator cannot distinguish good output from bad, every harness iteration is wasted motion — verify its discrimination first (e.g. confirm it separates a known-good from a known-bad output) before touching the agent. And never let the same agent both produce and grade work: self-evaluation skews confidently positive. Use a separate evaluator explicitly tuned toward skepticism, tasked with finding problems rather than confirming success.
+
+### Adversarial Review
+
+14. Prefer cross-model review over self-review
+
+Allow agents to refine ideas given feedback from an adversarial model when strong feedback has a large downstream impact. If the value of good feedback is low then self review might be better given the large token and time costs from delegating to an adversarial model.
+
+15. For selection tasks choose an adversarial judge instead of self-selection
+
+Self-enhancement bias is real so ensure that judges that select the best idea or proposal come from a different family of model than that which generates the idea or proposal. For instance, Codex should have Claude judge the winner from the proposals or ideas it generates. Score on explicit criteria with reasoning rather than a bare "which is best" and make sure to present them neutrally to minimize position bias (order of candidates) and verbosity bias (longer rated higher).
+
+16. Avoid excessive self-refinement rounds without external feedback
+
+One self-refinement loop is acceptable, but successive self-refinement loops relying only on the agent's own feedback to its ideas or proposals risks degrading the output. Self-refinement should never exceed more than one round. For further rounds of refinement there should be reliable external feedback either from the agent's environment (e.g. the agent tests its own ideas) or from the user or a cross-model (out of distribution).
